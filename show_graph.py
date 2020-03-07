@@ -23,4 +23,4 @@ for i in range(nEdges):
 
 nx.draw(G, with_labels=True)
 plt.show()
-plt.savefig("graph.png")
+# plt.savefig("graph.png")
