@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -17,15 +18,20 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Component;
+
 
 public class GUI extends JPanel {
     private static final long serialVersionUID = 1L;
+    private ArrayList<JTextField> edgesTF;
 
     public GUI() {
         super(new GridLayout(1, 1));
-        
+        this.edgesTF = new ArrayList<>();
+
         JTabbedPane tabbedPane = new JTabbedPane();
         
         JComponent setup = createSetupPanel();
@@ -74,8 +80,16 @@ public class GUI extends JPanel {
         JButton generate = new JButton("Generate!");
         generate.addActionListener(new ActionListener(){
             @Override
-            public void actionPerformed(ActionEvent e) {
-                generateGraph();
+            public void actionPerformed(ActionEvent event) {
+                ArrayList<Edge> edgesArr = new ArrayList<>();
+                // Loop over inputs 
+                for(int i = 0; i < edgesTF.size(); i+=2){
+                    JTextField u = edgesTF.get(i); 
+                    JTextField v = edgesTF.get(i+1); 
+                    Edge e = new Edge(Integer.valueOf(u.getText()), Integer.valueOf(v.getText()));
+                    edgesArr.add(e);
+                }
+                generateGraph((Integer) nVertices.getSelectedItem(), edgesArr);
             }
         });
         JPanel bottomPanel = new JPanel(new BorderLayout());
@@ -104,6 +118,7 @@ public class GUI extends JPanel {
     }
 
     private JPanel createEdgesInput(int nEdges){
+        edgesTF.clear();
         JPanel panel = new JPanel(new GridLayout(nEdges+1, 2));
         panel.add(new JLabel("From"));
         panel.add(new JLabel("To"));
@@ -115,23 +130,17 @@ public class GUI extends JPanel {
             v.setPreferredSize(size);
             panel.add(u);
             panel.add(v);
+            edgesTF.add(u);
+            edgesTF.add(v);
         }
         return panel;
     }
 
-    private void generateGraph(){
-
+    private void generateGraph(Integer nVertices, ArrayList<Edge> edges){
+        // Undirected for now
+        UndirectedGraphBuilder ugb = new UndirectedGraphBuilder(nVertices, edge); 
     }
 
-    private JPanel createBoxRow(JComponent label, JComponent val){
-        JPanel row = new JPanel(false);
-        row.setLayout(new BoxLayout(row, BoxLayout.LINE_AXIS));
-        row.add(label);
-        row.add(Box.createHorizontalGlue());
-        row.add(val);
-        return row;
-    }
-    
     protected JComponent makeTextPanel(String text) {
         JPanel panel = new JPanel(false);
         JLabel filler = new JLabel(text);
