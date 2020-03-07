@@ -6,6 +6,7 @@ public class UndirectedGraphBuilder implements IGraphBuilder {
     private ArrayList<Integer>[] adjacencyList;
     private boolean[][] adjacencyMatrix;
     private int[][] representationMatrix;
+    private boolean[][] incidenceMatrix;
 
     public UndirectedGraphBuilder(int nodes, ArrayList<Edge> edgeList){
         this.nodes = nodes;
@@ -53,7 +54,15 @@ public class UndirectedGraphBuilder implements IGraphBuilder {
     }
     public int[][] getRepresentationMatrix(){return representationMatrix;}
 
-    
-//    public int[][] getIncidenceMatrix(){return incidenceMatrix;}
+    public void buildIncidenceMatrix(){
+        incidenceMatrix = new boolean[nodes][edgeList.size()];
+        for(int i = 0; i<edgeList.size(); i++){
+            int u = edgeList.get(i).getU();
+            int v = edgeList.get(i).getV();
+            incidenceMatrix[u][i] = true;
+            incidenceMatrix[v][i] = true;
+        }
+    }
+    public boolean[][] getIncidenceMatrix(){return incidenceMatrix;}
 
 }
