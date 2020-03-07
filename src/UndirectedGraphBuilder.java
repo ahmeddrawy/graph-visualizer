@@ -5,6 +5,7 @@ public class UndirectedGraphBuilder implements IGraphBuilder {
     private ArrayList<Edge> edgeList;
     private ArrayList<Integer>[] adjacencyList;
     private boolean[][] adjacencyMatrix;
+    private int[][] representationMatrix;
 
     public UndirectedGraphBuilder(int nodes, ArrayList<Edge> edgeList){
         this.nodes = nodes;
@@ -38,7 +39,21 @@ public class UndirectedGraphBuilder implements IGraphBuilder {
     }
     public boolean[][] getAdjacencyMatrix(){return adjacencyMatrix;}
 
+    public void buildRepresentationMatrix(){ /// Building representation matrix from adjacency list as requested.
+        if(adjacencyList == null)
+            buildAdjacencyList();
+
+        representationMatrix = new int[nodes][nodes]; /// initialized with zero by default.
+
+        for(int i = 0; i<nodes; i++){
+            for(int neighbour : adjacencyList[i]){
+                representationMatrix[i][neighbour]++;
+            }
+        }
+    }
     public int[][] getRepresentationMatrix(){return representationMatrix;}
-    public int[][] getIncidenceMatrix(){return incidenceMatrix;}
+
+    
+//    public int[][] getIncidenceMatrix(){return incidenceMatrix;}
 
 }
