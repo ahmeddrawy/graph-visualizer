@@ -1,7 +1,13 @@
 public class Edge {
     private int u;
     private int v;
+    Edge(){
 
+    }
+    Edge(int u , int v){
+        this.u = u ;
+        this.v = v;
+    }
     public void setU(int u){
         this.u = u;
     }
