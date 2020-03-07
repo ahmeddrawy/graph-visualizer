@@ -27,12 +27,14 @@ import java.awt.Component;
 public class GUI extends JPanel {
     private static final long serialVersionUID = 1L;
     private ArrayList<JTextField> edgesTF;
+    JTabbedPane tabbedPane;
+    JPanel adjListPanel;
 
     public GUI() {
         super(new GridLayout(1, 1));
         this.edgesTF = new ArrayList<>();
 
-        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane = new JTabbedPane();
         
         JComponent setup = createSetupPanel();
         tabbedPane.addTab("Setup", setup);
@@ -43,8 +45,8 @@ public class GUI extends JPanel {
         tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
         tabbedPane.setEnabledAt(1, false);
         
-        JComponent adjList = makeTextPanel("Panel #3");
-        tabbedPane.addTab("Adjacency List", adjList);
+        adjListPanel = new JPanel(new BorderLayout());
+        tabbedPane.addTab("Adjacency List", adjListPanel);
         tabbedPane.setMnemonicAt(2, KeyEvent.VK_3);
         tabbedPane.setEnabledAt(2, false);
         
@@ -138,7 +140,36 @@ public class GUI extends JPanel {
 
     private void generateGraph(Integer nVertices, ArrayList<Edge> edges){
         // Undirected for now
-        UndirectedGraphBuilder ugb = new UndirectedGraphBuilder(nVertices, edge); 
+        IGraphBuilder graph = new UndirectedGraphBuilder(nVertices, edges); 
+        // Adjacency list
+        graph.buildAdjacencyList();
+        ArrayList<Integer>[] adjList = graph.getAdjacencyList();
+        tabbedPane.setEnabledAt(2, true);
+        adjListPanel.removeAll();
+        adjListPanel.add(createAdjacencyListView(adjList));
+        adjListPanel.repaint();
+            
+    }
+
+    private JPanel createAdjacencyListView(ArrayList<Integer>[] list){
+        JPanel panel = new JPanel(new GridLayout(list.length, 2));
+        for(int i = 0; i < list.length; ++i){
+            JLabel src = new JLabel(String.valueOf(i));
+            JLabel dst = new JLabel(sexyArrayList(list[i]));
+            panel.add(src);
+            panel.add(dst);
+        }
+
+        return panel;
+    }
+
+    private <T> String sexyArrayList(ArrayList<T> arr){
+        String out = "[";
+        for(int i = 0; i < arr.size(); ++i){
+            out = out + arr.get(i) + ",";
+        }
+        out = out + "]";
+        return out;
     }
 
     protected JComponent makeTextPanel(String text) {
