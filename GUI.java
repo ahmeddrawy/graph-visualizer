@@ -205,6 +205,38 @@ public class GUI extends JPanel {
         representationMatrixPanel.removeAll();
         representationMatrixPanel.add(createRepresenationMatrixView(representationMatrix));
         representationMatrixPanel.repaint();
+
+        // Incidence matrix
+        graph.buildIncidenceMatrix();
+        boolean[][] incidenceMatrix = graph.getIncidenceMatrix();
+        tabbedPane.setEnabledAt(5, true);
+        incidenceMatrixPanel.removeAll();
+        incidenceMatrixPanel.add(createIncidenceMatrixView(incidenceMatrix));
+        incidenceMatrixPanel.repaint();
+
+    }
+
+    private JPanel createIncidenceMatrixView(boolean[][] mat){
+        JPanel panel = new JPanel(new GridLayout(mat.length+1, mat[0].length+1));
+        int r = 0;
+        int c = 0;
+        for(int i = -1; i < mat.length; ++i){
+            for(int j = -1; j < mat[0].length; ++j){
+                if(i == -1 && j == -1){
+                    panel.add(new JLabel(""));
+                }else if(i == -1){
+                    panel.add(new JLabel(String.valueOf(c++)));
+                }else if(j == -1){
+                    panel.add(new JLabel(String.valueOf(r++)));
+                }else{
+                    if(mat[i][j])
+                        panel.add(new JLabel("YES"));
+                    else
+                        panel.add(new JLabel("NO"));
+                }
+            }
+        }
+        return panel;
     }
 
     private JPanel createAdjacencyMatrixView(boolean[][] mat){
