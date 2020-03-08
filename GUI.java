@@ -76,7 +76,7 @@ public class GUI extends JPanel {
         JPanel edges = new JPanel(false);
         edges.setAutoscrolls(true);
         JScrollPane edgesMain = new JScrollPane(edges); 
-        edgesMain.setPreferredSize(new Dimension(200, 200));
+        edgesMain.setPreferredSize(new Dimension(600, 450));
 
 
         Integer[] numbers = new Integer[100];
