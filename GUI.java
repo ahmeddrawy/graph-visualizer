@@ -36,7 +36,7 @@ public class GUI extends JPanel {
     private static final long serialVersionUID = 1L;
     private ArrayList<JTextField> edgesTF;
     JTabbedPane tabbedPane;
-    JPanel adjListPanel, visualsPanel, adjMatrixPanel;
+    JPanel adjListPanel, visualsPanel, adjMatrixPanel, representationMatrixPanel, incidenceMatrixPanel;
 
     public GUI() {
         super(new GridLayout(1, 1));
@@ -63,6 +63,16 @@ public class GUI extends JPanel {
         tabbedPane.setMnemonicAt(3, KeyEvent.VK_4);
         tabbedPane.setEnabledAt(3, false);
         
+        representationMatrixPanel = new JPanel(new BorderLayout());
+        tabbedPane.addTab("Representation Matrix", representationMatrixPanel);
+        tabbedPane.setMnemonicAt(4, KeyEvent.VK_5);
+        tabbedPane.setEnabledAt(4, false);
+
+        incidenceMatrixPanel = new JPanel(new BorderLayout());
+        tabbedPane.addTab("Incidence Matrix", incidenceMatrixPanel);
+        tabbedPane.setMnemonicAt(5, KeyEvent.VK_6);
+        tabbedPane.setEnabledAt(5, false);
+
         add(tabbedPane);
         
         //The following line enables to use scrolling tabs.
@@ -179,6 +189,7 @@ public class GUI extends JPanel {
         }catch(InterruptedException e){
             e.printStackTrace();
         }
+
         // Adjacency Matrix
         graph.buildAdjacencyMatrix();
         boolean[][] adjMat = graph.getAdjacencyMatrix();
@@ -186,6 +197,14 @@ public class GUI extends JPanel {
         adjMatrixPanel.removeAll();
         adjMatrixPanel.add(createAdjacencyMatrixView(adjMat));
         adjMatrixPanel.repaint();
+
+        // Representation matrix
+        graph.buildRepresentationMatrix();
+        int[][] representationMatrix = graph.getRepresentationMatrix();
+        tabbedPane.setEnabledAt(4, true);
+        representationMatrixPanel.removeAll();
+        representationMatrixPanel.add(createRepresenationMatrixView(representationMatrix));
+        representationMatrixPanel.repaint();
     }
 
     private JPanel createAdjacencyMatrixView(boolean[][] mat){
@@ -205,6 +224,27 @@ public class GUI extends JPanel {
                         panel.add(new JLabel("YES"));
                     else
                         panel.add(new JLabel("NO"));
+                }
+            }
+        }
+        return panel;
+    }
+
+    private JPanel createRepresenationMatrixView(int[][] mat){
+
+        JPanel panel = new JPanel(new GridLayout(mat.length+1, mat.length+1));
+        int r = 0;
+        int c = 0;
+        for(int i = -1; i < mat.length; ++i){
+            for(int j = -1; j < mat.length; ++j){
+                if(i == -1 && j == -1){
+                    panel.add(new JLabel(""));
+                }else if(i == -1){
+                    panel.add(new JLabel(String.valueOf(c++)));
+                }else if(j == -1){
+                    panel.add(new JLabel(String.valueOf(r++)));
+                }else{
+                    panel.add(new JLabel(String.valueOf(mat[i][j])));
                 }
             }
         }

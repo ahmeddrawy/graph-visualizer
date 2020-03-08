@@ -10,9 +10,9 @@ isDirected = isDirected == 'y'
  
 G = None
 if(isDirected):
-    G = nx.DiGraph()
+    G = nx.MultiDiGraph()
 else:
-    G = nx.Graph()
+    G = nx.MultiGraph()
 
 nEdges = int(input("Enter the number of edges: "))
 
