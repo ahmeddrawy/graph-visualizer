@@ -36,7 +36,7 @@ public class GUI extends JPanel {
     private static final long serialVersionUID = 1L;
     private ArrayList<JTextField> edgesTF;
     JTabbedPane tabbedPane;
-    JPanel adjListPanel, visualsPanel;
+    JPanel adjListPanel, visualsPanel, adjMatrixPanel;
 
     public GUI() {
         super(new GridLayout(1, 1));
@@ -58,9 +58,8 @@ public class GUI extends JPanel {
         tabbedPane.setMnemonicAt(2, KeyEvent.VK_3);
         tabbedPane.setEnabledAt(2, false);
         
-        JComponent adjMatrix = makeTextPanel( "Panel #4");
-        adjMatrix.setPreferredSize(new Dimension(410, 50));
-        tabbedPane.addTab("Adjacency Matrix", adjMatrix);
+        adjMatrixPanel = new JPanel(new BorderLayout());
+        tabbedPane.addTab("Adjacency Matrix", adjMatrixPanel);
         tabbedPane.setMnemonicAt(3, KeyEvent.VK_4);
         tabbedPane.setEnabledAt(3, false);
         
@@ -167,6 +166,7 @@ public class GUI extends JPanel {
                 bw.write(String.valueOf(edges.get(i).getV()));bw.newLine();
             }
             bw.close();
+            p.waitFor();
             // Show image
             BufferedImage myPicture = ImageIO.read(new File("graph.png"));
             JLabel picLabel = new JLabel(new ImageIcon(new ImageIcon(myPicture).getImage().getScaledInstance(500, 500, Image.SCALE_SMOOTH)));
@@ -176,7 +176,39 @@ public class GUI extends JPanel {
             tabbedPane.setEnabledAt(1, true);
         }catch(IOException e){
             e.printStackTrace();
-        } 
+        }catch(InterruptedException e){
+            e.printStackTrace();
+        }
+        // Adjacency Matrix
+        graph.buildAdjacencyMatrix();
+        boolean[][] adjMat = graph.getAdjacencyMatrix();
+        tabbedPane.setEnabledAt(3, true);
+        adjMatrixPanel.removeAll();
+        adjMatrixPanel.add(createAdjacencyMatrixView(adjMat));
+        adjMatrixPanel.repaint();
+    }
+
+    private JPanel createAdjacencyMatrixView(boolean[][] mat){
+        JPanel panel = new JPanel(new GridLayout(mat.length+1, mat.length+1));
+        int r = 0;
+        int c = 0;
+        for(int i = -1; i < mat.length; ++i){
+            for(int j = -1; j < mat.length; ++j){
+                if(i == -1 && j == -1){
+                    panel.add(new JLabel(""));
+                }else if(i == -1){
+                    panel.add(new JLabel(String.valueOf(c++)));
+                }else if(j == -1){
+                    panel.add(new JLabel(String.valueOf(r++)));
+                }else{
+                    if(mat[i][j])
+                        panel.add(new JLabel("YES"));
+                    else
+                        panel.add(new JLabel("NO"));
+                }
+            }
+        }
+        return panel;
     }
 
     private JPanel createAdjacencyListView(ArrayList<Integer>[] list){
@@ -187,7 +219,6 @@ public class GUI extends JPanel {
             panel.add(src);
             panel.add(dst);
         }
-
         return panel;
     }
 
