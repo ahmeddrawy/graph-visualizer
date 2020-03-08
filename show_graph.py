@@ -22,5 +22,5 @@ for i in range(nEdges):
     G.add_edge(a, b)
 
 nx.draw(G, with_labels=True)
-plt.show()
-# plt.savefig("graph.png")
+# plt.show()
+plt.savefig("graph.png")

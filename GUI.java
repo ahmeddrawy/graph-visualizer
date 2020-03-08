@@ -17,18 +17,26 @@ import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.KeyEvent;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Component;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.File;
 
 
 public class GUI extends JPanel {
     private static final long serialVersionUID = 1L;
     private ArrayList<JTextField> edgesTF;
     JTabbedPane tabbedPane;
-    JPanel adjListPanel;
+    JPanel adjListPanel, visualsPanel;
 
     public GUI() {
         super(new GridLayout(1, 1));
@@ -40,8 +48,8 @@ public class GUI extends JPanel {
         tabbedPane.addTab("Setup", setup);
         tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
         
-        JComponent visual = makeTextPanel("Panel #2");
-        tabbedPane.addTab("Visual", visual);
+        visualsPanel = new JPanel(new BorderLayout());
+        tabbedPane.addTab("Visual", visualsPanel);
         tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
         tabbedPane.setEnabledAt(1, false);
         
@@ -148,7 +156,27 @@ public class GUI extends JPanel {
         adjListPanel.removeAll();
         adjListPanel.add(createAdjacencyListView(adjList));
         adjListPanel.repaint();
-            
+        // Visual
+        try{
+            Process p = Runtime.getRuntime().exec(new String[]{"python", "show_graph.py"});
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(p.getOutputStream(), StandardCharsets.UTF_8));
+            bw.write("n");bw.newLine();
+            bw.write(String.valueOf(edges.size()));bw.newLine();
+            for(int i = 0; i < edges.size(); ++i){
+                bw.write(String.valueOf(edges.get(i).getU()));bw.newLine();
+                bw.write(String.valueOf(edges.get(i).getV()));bw.newLine();
+            }
+            bw.close();
+            // Show image
+            BufferedImage myPicture = ImageIO.read(new File("graph.png"));
+            JLabel picLabel = new JLabel(new ImageIcon(new ImageIcon(myPicture).getImage().getScaledInstance(500, 500, Image.SCALE_SMOOTH)));
+            visualsPanel.removeAll();
+            visualsPanel.add(picLabel);
+            visualsPanel.repaint();
+            tabbedPane.setEnabledAt(1, true);
+        }catch(IOException e){
+            e.printStackTrace();
+        } 
     }
 
     private JPanel createAdjacencyListView(ArrayList<Integer>[] list){
