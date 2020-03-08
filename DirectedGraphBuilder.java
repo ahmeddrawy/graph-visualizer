@@ -1,6 +1,6 @@
 import java.util.ArrayList;
-
-public class UndirectedGraphBuilder implements IGraphBuilder {
+/// coded by khaled edited to be directed by Hanafy- today 07/03/2020 5PM
+public class DirectedGraphBuilder {
     private int nodes;
     private ArrayList<Edge> edgeList;
     private ArrayList<Integer>[] adjacencyList;
@@ -8,9 +8,13 @@ public class UndirectedGraphBuilder implements IGraphBuilder {
     private int[][] representationMatrix;
     private int[][] incidenceMatrix;
 
-    public UndirectedGraphBuilder(int nodes, ArrayList<Edge> edgeList){
+    public DirectedGraphBuilder(int nodes, ArrayList<Edge> edgeList){
         this.nodes = nodes;
         this.edgeList = edgeList;
+        buildAdjacencyList();
+        buildAdjacencyMatrix();
+        buildIncidenceMatrix();
+        buildRepresentationMatrix();
     }
 
     public void buildAdjacencyList(){
@@ -23,7 +27,6 @@ public class UndirectedGraphBuilder implements IGraphBuilder {
             int v = edgeList.get(i).getV();
 
             adjacencyList[u].add(v);
-            adjacencyList[v].add(u);
         }
     }
     public ArrayList<Integer>[] getAdjacencyList(){return adjacencyList;}
@@ -35,7 +38,6 @@ public class UndirectedGraphBuilder implements IGraphBuilder {
             int v = edgeList.get(i).getV();
 
             adjacencyMatrix[u][v] = true;
-            adjacencyMatrix[v][u] = true;
         }
     }
     public boolean[][] getAdjacencyMatrix(){return adjacencyMatrix;}
@@ -59,7 +61,7 @@ public class UndirectedGraphBuilder implements IGraphBuilder {
         for(int i = 0; i<edgeList.size(); i++){
             int u = edgeList.get(i).getU();
             int v = edgeList.get(i).getV();
-            incidenceMatrix[u][i] += 1;
+            incidenceMatrix[u][i] = -1;
             incidenceMatrix[v][i] += 1;
         }
     }

@@ -10,10 +10,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+
+import org.graalvm.compiler.replacements.IntrinsicGraphBuilder;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -81,7 +85,7 @@ public class GUI extends JPanel {
 
     private JPanel createSetupPanel(){
         JPanel panel = new JPanel(false);
-        JPanel form = new JPanel(new GridLayout(2,2));
+        JPanel form = new JPanel(new GridLayout(3,3));
         JPanel edges = new JPanel(false);
         edges.setAutoscrolls(true);
         JScrollPane edgesMain = new JScrollPane(edges); 
@@ -96,6 +100,8 @@ public class GUI extends JPanel {
         JComboBox nVertices = new JComboBox<>(numbers);
         JLabel nEdgesLabel = new JLabel("Select number of edges");
         JComboBox nEdges = new JComboBox<>(numbers);
+        JLabel isDirectedLabel = new JLabel("Is it a directed graph?");
+        JCheckBox isDirected = new JCheckBox();
         JButton generate = new JButton("Generate!");
         generate.addActionListener(new ActionListener(){
             @Override
@@ -108,7 +114,7 @@ public class GUI extends JPanel {
                     Edge e = new Edge(Integer.valueOf(u.getText()), Integer.valueOf(v.getText()));
                     edgesArr.add(e);
                 }
-                generateGraph((Integer) nVertices.getSelectedItem(), edgesArr);
+                generateGraph((Integer) nVertices.getSelectedItem(), edgesArr, isDirected.isSelected());
             }
         });
         JPanel bottomPanel = new JPanel(new BorderLayout());
@@ -128,6 +134,8 @@ public class GUI extends JPanel {
         form.add(nVertices);
         form.add(nEdgesLabel);
         form.add(nEdges);
+        form.add(isDirectedLabel);
+        form.add(isDirected);
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
         panel.add(form);
@@ -155,9 +163,13 @@ public class GUI extends JPanel {
         return panel;
     }
 
-    private void generateGraph(Integer nVertices, ArrayList<Edge> edges){
-        // Undirected for now
-        IGraphBuilder graph = new UndirectedGraphBuilder(nVertices, edges); 
+    private void generateGraph(Integer nVertices, ArrayList<Edge> edges, boolean isDirected){
+         IntrinsicGraphBuilder graph = null;
+        if(isDirected){
+            IGraphBuilder graph = new UndirectedGraphBuilder(nVertices, edges); 
+        }else{
+            IGraphBuilder graph = new UndirectedGraphBuilder(nVertices, edges); 
+        }
         // Adjacency list
         graph.buildAdjacencyList();
         ArrayList<Integer>[] adjList = graph.getAdjacencyList();

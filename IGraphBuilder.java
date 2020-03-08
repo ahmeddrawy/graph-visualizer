@@ -11,5 +11,5 @@ public interface IGraphBuilder {
     public int[][] getRepresentationMatrix();
 
     public void buildIncidenceMatrix();
-    public boolean[][] getIncidenceMatrix();
+    public int[][] getIncidenceMatrix();
 }
