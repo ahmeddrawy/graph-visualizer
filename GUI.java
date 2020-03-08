@@ -15,9 +15,6 @@ import javax.swing.JFrame;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-
-import org.graalvm.compiler.replacements.IntrinsicGraphBuilder;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -164,11 +161,11 @@ public class GUI extends JPanel {
     }
 
     private void generateGraph(Integer nVertices, ArrayList<Edge> edges, boolean isDirected){
-         IntrinsicGraphBuilder graph = null;
+         IGraphBuilder graph = null;
         if(isDirected){
-            IGraphBuilder graph = new UndirectedGraphBuilder(nVertices, edges); 
+            graph = new DirectedGraphBuilder(nVertices, edges); 
         }else{
-            IGraphBuilder graph = new UndirectedGraphBuilder(nVertices, edges); 
+            graph = new UndirectedGraphBuilder(nVertices, edges); 
         }
         // Adjacency list
         graph.buildAdjacencyList();
@@ -181,7 +178,7 @@ public class GUI extends JPanel {
         try{
             Process p = Runtime.getRuntime().exec(new String[]{"python", "show_graph.py"});
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(p.getOutputStream(), StandardCharsets.UTF_8));
-            bw.write("n");bw.newLine();
+            bw.write(isDirected? "y" : "n");bw.newLine();
             bw.write(String.valueOf(edges.size()));bw.newLine();
             for(int i = 0; i < edges.size(); ++i){
                 bw.write(String.valueOf(edges.get(i).getU()));bw.newLine();
@@ -220,7 +217,7 @@ public class GUI extends JPanel {
 
         // Incidence matrix
         graph.buildIncidenceMatrix();
-        boolean[][] incidenceMatrix = graph.getIncidenceMatrix();
+        int[][] incidenceMatrix = graph.getIncidenceMatrix();
         tabbedPane.setEnabledAt(5, true);
         incidenceMatrixPanel.removeAll();
         incidenceMatrixPanel.add(createIncidenceMatrixView(incidenceMatrix));
@@ -228,7 +225,7 @@ public class GUI extends JPanel {
 
     }
 
-    private JPanel createIncidenceMatrixView(boolean[][] mat){
+    private JPanel createIncidenceMatrixView(int[][] mat){
         JPanel panel = new JPanel(new GridLayout(mat.length+1, mat[0].length+1));
         int r = 0;
         int c = 0;
@@ -241,7 +238,7 @@ public class GUI extends JPanel {
                 }else if(j == -1){
                     panel.add(new JLabel(String.valueOf(r++)));
                 }else{
-                    if(mat[i][j])
+                    if(mat[i][j] == 1) //TODO: Why is it an int?
                         panel.add(new JLabel("YES"));
                     else
                         panel.add(new JLabel("NO"));

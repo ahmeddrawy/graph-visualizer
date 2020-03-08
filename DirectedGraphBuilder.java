@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 /// coded by khaled edited to be directed by Hanafy- today 07/03/2020 5PM
-public class DirectedGraphBuilder {
+public class DirectedGraphBuilder implements IGraphBuilder{
     private int nodes;
     private ArrayList<Edge> edgeList;
     private ArrayList<Integer>[] adjacencyList;
