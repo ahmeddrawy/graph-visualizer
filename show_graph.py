@@ -14,11 +14,15 @@ if(isDirected):
 else:
     G = nx.MultiGraph()
 
+nVertices = int(input("Enter the number of vertices: "))
+for i in range(nVertices):
+    G.add_node(i)
+
 nEdges = int(input("Enter the number of edges: "))
 
 for i in range(nEdges):
-    a = input("Enter edge #" + str(i+1) + " a: ")
-    b = input("Enter edge #" + str(i+1) + " b: ")
+    a = int(input("Enter edge #" + str(i+1) + " a: "))
+    b = int(input("Enter edge #" + str(i+1) + " b: "))
     G.add_edge(a, b)
 
 nx.draw(G, with_labels=True)

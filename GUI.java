@@ -179,6 +179,7 @@ public class GUI extends JPanel {
             Process p = Runtime.getRuntime().exec(new String[]{"python", "show_graph.py"});
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(p.getOutputStream(), StandardCharsets.UTF_8));
             bw.write(isDirected? "y" : "n");bw.newLine();
+            bw.write(String.valueOf(nVertices));bw.newLine();
             bw.write(String.valueOf(edges.size()));bw.newLine();
             for(int i = 0; i < edges.size(); ++i){
                 bw.write(String.valueOf(edges.get(i).getU()));bw.newLine();
