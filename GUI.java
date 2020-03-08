@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JComponent;
@@ -104,14 +105,29 @@ public class GUI extends JPanel {
             @Override
             public void actionPerformed(ActionEvent event) {
                 ArrayList<Edge> edgesArr = new ArrayList<>();
+                Integer nV = (Integer) nVertices.getSelectedItem();
+                boolean ok = true;
                 // Loop over inputs 
                 for(int i = 0; i < edgesTF.size(); i+=2){
                     JTextField u = edgesTF.get(i); 
                     JTextField v = edgesTF.get(i+1); 
-                    Edge e = new Edge(Integer.valueOf(u.getText()), Integer.valueOf(v.getText()));
-                    edgesArr.add(e);
+                    try{
+                        Edge e = new Edge(Integer.valueOf(u.getText()), Integer.valueOf(v.getText()));
+                        // Check that there is no out of bounds vertices
+                        if(e.getU() >= nV || e.getV() >= nV || e.getU() < 0 || e.getV() < 0){
+                            ok = false;
+                            break;
+                        }
+                        edgesArr.add(e);
+                    }catch(NumberFormatException e){
+                        ok = false;
+                        break;
+                    }
                 }
-                generateGraph((Integer) nVertices.getSelectedItem(), edgesArr, isDirected.isSelected());
+                if(ok)
+                    generateGraph(nV, edgesArr, isDirected.isSelected());
+                else
+                    JOptionPane.showMessageDialog(null, "Some nodes are not entered correctly");
             }
         });
         JPanel bottomPanel = new JPanel(new BorderLayout());
